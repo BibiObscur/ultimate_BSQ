@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_str.c                                           :+:      :+:    :+:   */
+/*   str.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: bperreon <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: fmontaro <fmontaro@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2014/07/22 12:42:17 by bperreon          #+#    #+#             */
-/*   Updated: 2014/07/24 13:23:41 by bperreon         ###   ########.fr       */
+/*   Created: 2014/07/21 18:48:59 by fmontaro          #+#    #+#             */
+/*   Updated: 2014/07/22 18:30:07 by fmontaro         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <stdlib.h>
-#include "ft_put.h"
+#include <stdint.h>
 
 char			*ft_strchr(char *str, int c)
 {
@@ -53,6 +53,18 @@ int				ft_strlen(char *s)
 	}
 }
 
+/*
+ *int				ft_strlen(char *s)
+ *{
+ *    int			i;
+ *
+ *    i = 0;
+ *    while (s[i])
+ *        ++i;
+ *    return (i);
+ *}
+ */
+
 char			*ft_strcpy(char *dest, char *src)
 {
 	char		*d;
@@ -81,30 +93,4 @@ int				ft_strequ(char *s1, char *s2)
 			return (0);
 	}
 	return ((*s2 == 0));
-}
-
-char			*ft_strcat(char *dest, char *src)
-{
-	char *s1;
-
-	s1 = (char *)malloc(sizeof(char) * (ft_strlen(dest) + ft_strlen(src) + 1));
-	s1 = ft_strcpy(s1, dest);
-	s1 = ft_strcpy(dest + ft_strlen(dest), src);
-	return (dest);
-}
-
-int				ft_get_nb(char *str)
-{
-	int i;
-	int nb;
-
-	i = 0;
-	nb = 0;
-	while (str[i] >= '0' && str[i] <= '9')
-	{
-		nb += str[i] - '0';
-		nb *= 10;
-		i++;
-	}
-	return (nb / 10);
 }

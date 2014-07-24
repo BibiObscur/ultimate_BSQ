@@ -6,7 +6,7 @@
 /*   By: bperreon <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/07/23 22:19:26 by bperreon          #+#    #+#             */
-/*   Updated: 2014/07/24 10:38:28 by bperreon         ###   ########.fr       */
+/*   Updated: 2014/07/24 15:41:54 by bperreon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,66 +15,114 @@
 #include "bsq_def.h"
 #include "ft_str.h"
 
-#define BUFF_SIZE 8192
+#include "ft_put.h"
 
-int		get_linesize(char *buff)
+int			init_tab(int **tab, int length)
 {
 	int i;
 
-	i = 0;
-	while (buff[i] && buff[i] != '\n')
-		i++;
-	if (buff[i] == '\n')
-		return (i);
-	return (0);
-}
-
-void	init_tab(int **line, int length)
-{
-	int i;
-
+	if (!(*tab = malloc(sizeof(int) * length)))
+		return (0);
 	i = -1;
 	while (++i < length)
-		(*line)[i] = 0;
+		(*tab)[i] = 0;
+	return (1);
 }
 
-int		go(char *buff, int **line, t_pos *pos, t_map *map)
+int			find_square(int *tab, int i, int size, int val)
 {
-	if (!(*line))
+	int count;
+
+	count = 0;
+	if (size > i + val)
+		size = i + val;
+	while (i < size)
 	{
-		if ((map->column_nb = get_linesize(buff)) == 0)
+		if (tab[i] < val)
 			return (0);
-		*line = malloc(sizeof(int) * map->column_nb);
-		init_tab(line, map->column_nb);
+		count++;
+		i++;
 	}
-	while (pos->x < map->column_nb)
+	return (count == val);
+}
+
+void		to_square(int x, int y, int size, t_square *square)
+{
+	square->pos.x = x;
+	square->pos.y = y;
+	square->size = size;
+}
+
+int			go(int **tab, char *line, int y, t_map *map)
+{
+	int i;
+
+	if (map->column_nb == -1)
+		map->column_nb = ft_strlen(line);
+	i = -1;
+	while (line[++i])
 	{
-		if (buff[pos->x] == map->block)
-			(*line)[pos->x] == 0;
+		if (line[i] != map->empty && line[i] != map->block)
+			return (0);
 		else
-			(*line)[pos->x]++;
-		pos->x++;
+			(*tab)[i] = (line[i] == map->empty) ? (*tab)[i] + 1 : 0;
 	}
-	map->square = read_line(*line, map->square, pos);
-	pos->y++;
+	i = 0;
+	ft_putnbr(y, 1);
+	ft_putstr("  :  ", 1);
+	while (i < map->column_nb)
+	{
+		ft_putnbr((*tab)[i], 1);
+		ft_putstr("   ", 1);
+		i++;
+	}
+	ft_putchar('\n', 1);
+	i = -1;
+	while (++i < map->column_nb)
+	{
+		if ((*tab)[i] > map->square->size)
+		{
+			if (find_square((*tab), i, map->column_nb, map->square->size + 1))
+			{
+				to_square(i, y, map->square->size + 1, map->square);
+				ft_putstr("x = ", 1);
+				ft_putnbr(map->square->pos.x, 1);
+				ft_putstr("   y = ", 1);
+				ft_putnbr(map->square->pos.y, 1);
+				ft_putstr("   size = ", 1);
+				ft_putnbr(map->square->size, 1);
+				ft_putchar('\n', 1);
+			}
+		}
+	}
+	return (1);
 }
 
 t_square	*get_square(int file, t_map *map)
 {
-	int			*line;
-	t_pos		pos;
+	int			*tab;
+	char		*line;
+	int			y;
 	int			ret;
-	char		buff[BUFF_SIZE];
 
-	pos.x = 0;
-	pos.y = 0;
-	while ((ret = read(file, buff, BUFF_SIZE - 1)) > 0)
+	y = 0;
+	map->square = malloc(sizeof(t_square));
+	to_square(0, 0, 0, map->square);
+	line = NULL;
+	while ((ret = get_nextline(file, &line)) && line)
 	{
-		buff[ret] = 0;
-		if (!go(buff, &line, &pos, map))
+		if (ret < 0)
 			return (NULL);
+		if (!tab)
+			if (!init_tab(&tab, ft_strlen(line)))
+				return (NULL);
+		if (!go(&tab, line, y, map))
+			return (NULL);
+		if (ft_strlen(line) != map->column_nb || ft_strlen(line) == 0)
+			return (NULL);
+		y++;
 	}
-	if (pos.y != map->line_nb || map->column_nb == 0)
+	if (y != map->line_nb || map->column_nb == 0)
 		return (NULL);
 	return (map->square);
 }

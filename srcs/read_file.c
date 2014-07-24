@@ -6,7 +6,7 @@
 /*   By: bperreon <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/07/23 22:03:37 by bperreon          #+#    #+#             */
-/*   Updated: 2014/07/23 22:36:25 by bperreon         ###   ########.fr       */
+/*   Updated: 2014/07/24 14:50:05 by bperreon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,11 +23,12 @@ t_map		*set_map_char(t_map *map, char *header)
 	int i;
 
 	i = 0;
-	while (header[i] != '\n')
+	while (header[i] != '\0')
 		i++;
 	map->full = header[--i];
 	map->block = header[--i];
 	map->empty = header[--i];
+	map->column_nb = -1;
 	header[i] = 0;
 	map->line_nb = ft_get_nb(header + (i = 0));
 	while (header[i] >= '0' && header[i] <= '9')
@@ -41,18 +42,20 @@ t_map		*set_map_char(t_map *map, char *header)
 t_map	*get_char(int filedes)
 {
 	t_map	*map;
-	char	buff[2];
+//	char	buff[2];
 	char	*header;
 
 	map = (t_map *)malloc(sizeof(t_map));
 	header = (char *)malloc(sizeof(char) * 1);
 	*header = 0;
-	while (read(filedes, buff, 1) >= 0 && *buff != '\n')
+	/*while (read(filedes, buff, 1) >= 0 && *buff != '\n')
 	{
 		buff[1] = 0;
 		header = ft_strcat(header, buff);
 	}
-	header = ft_strcat(header, buff);
+	header = ft_strcat(header, buff);*/
+	if (get_nextline(filedes, &header) <= 0)
+		return (NULL);
 	return (set_map_char(map, header));
 }
 
