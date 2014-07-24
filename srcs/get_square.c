@@ -6,7 +6,7 @@
 /*   By: bperreon <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/07/23 22:19:26 by bperreon          #+#    #+#             */
-/*   Updated: 2014/07/24 15:41:54 by bperreon         ###   ########.fr       */
+/*   Updated: 2014/07/24 16:28:58 by bperreon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,19 +29,19 @@ int			init_tab(int **tab, int length)
 	return (1);
 }
 
-int			find_square(int *tab, int i, int size, int val)
+int			find_square(int *tab, int *i, int size, int val)
 {
 	int count;
 
 	count = 0;
-	if (size > i + val)
-		size = i + val;
-	while (i < size)
+	if (size > *i + val)
+		size = *i + val;
+	while (*i < size)
 	{
-		if (tab[i] < val)
+		if (tab[*i] < val)
 			return (0);
 		count++;
-		i++;
+		*i = *i + 1;
 	}
 	return (count == val);
 }
@@ -67,32 +67,13 @@ int			go(int **tab, char *line, int y, t_map *map)
 		else
 			(*tab)[i] = (line[i] == map->empty) ? (*tab)[i] + 1 : 0;
 	}
-	i = 0;
-	ft_putnbr(y, 1);
-	ft_putstr("  :  ", 1);
-	while (i < map->column_nb)
-	{
-		ft_putnbr((*tab)[i], 1);
-		ft_putstr("   ", 1);
-		i++;
-	}
-	ft_putchar('\n', 1);
 	i = -1;
 	while (++i < map->column_nb)
 	{
 		if ((*tab)[i] > map->square->size)
 		{
-			if (find_square((*tab), i, map->column_nb, map->square->size + 1))
-			{
+			if (find_square((*tab), &i, map->column_nb, map->square->size + 1))
 				to_square(i, y, map->square->size + 1, map->square);
-				ft_putstr("x = ", 1);
-				ft_putnbr(map->square->pos.x, 1);
-				ft_putstr("   y = ", 1);
-				ft_putnbr(map->square->pos.y, 1);
-				ft_putstr("   size = ", 1);
-				ft_putnbr(map->square->size, 1);
-				ft_putchar('\n', 1);
-			}
 		}
 	}
 	return (1);
@@ -120,9 +101,11 @@ t_square	*get_square(int file, t_map *map)
 			return (NULL);
 		if (ft_strlen(line) != map->column_nb || ft_strlen(line) == 0)
 			return (NULL);
+		free(line);
 		y++;
 	}
 	if (y != map->line_nb || map->column_nb == 0)
 		return (NULL);
+	free(tab);
 	return (map->square);
 }

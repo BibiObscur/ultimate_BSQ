@@ -6,7 +6,7 @@
 #    By: larrive <marvin@42.fr>                     +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2014/07/15 10:51:27 by larrive           #+#    #+#              #
-#    Updated: 2014/07/24 14:23:27 by bperreon         ###   ########.fr        #
+#    Updated: 2014/07/24 16:00:58 by bperreon         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,10 +21,10 @@ CC = gcc $(FLAG)
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(CC) -Ofast -g -o $(NAME) $(OBJ)
+	$(CC) -Ofast -o $(NAME) $(OBJ)
 
 %.o: $(SRCDIR)/%.c
-	$(CC) -Ofast -g -o $@ -c $<
+	$(CC) -Ofast -o $@ -c $<
 
 clean:
 	-rm $(OBJ)
