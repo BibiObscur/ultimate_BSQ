@@ -6,7 +6,7 @@
 /*   By: bperreon <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2014/07/23 16:44:20 by bperreon          #+#    #+#             */
-/*   Updated: 2014/07/23 22:07:07 by bperreon         ###   ########.fr       */
+/*   Updated: 2014/07/24 10:15:47 by bperreon         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,11 +15,11 @@
 
 void	run_bsq(int is_file, char *filename)
 {
-	t_square *square;
+	t_map *map;
 
-	square = read_file(is_file, filename);
-	if (square)
-		display_map(is_file, filename, square);
+	map = read_file(is_file, filename);
+	if (map)
+		display_map(is_file, filename, map);
 	else
 		ft_putstr("map error", 2);
 }
